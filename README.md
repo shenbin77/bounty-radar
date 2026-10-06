@@ -22,12 +22,16 @@ python3 main.py
 
 ## 定时推送（每周自动，需你动手 10 分钟）
 
-1. 把这个目录推到你自己的 GitHub 仓库（新建公开/私有仓都行）
-2. 在 Telegram 找 @BotFather 建 bot 拿 token；找 @JsonDumpBot 查你的 chat id
-3. 在 GitHub 仓库 Settings → Secrets → Actions 添加：
-   - `TELEGRAM_BOT_TOKEN`、`TELEGRAM_CHAT_ID`
-   - `DEEPSEEK_API_KEY`（可选，有则 AI 给每个赏金打难度/技能标签；没有也完全可用）
-4. Actions 里启用工作流，每周一自动推送；也可手动 Run workflow 立刻跑一次
+**方案 A：飞书（推荐，国内直接可用）**
+1. 仓库已建好：shenbin77/bounty-radar，直接用
+2. 飞书群 → 设置 → 群机器人 → 添加自定义机器人 → 复制 webhook 地址
+3. GitHub 仓库 Settings → Secrets → Actions 添加 `FEISHU_WEBHOOK_URL`
+4. Actions 启用工作流，每周一自动推送到飞书群；也可手动 Run workflow 立刻跑一次
+
+**方案 B：Telegram（需科学上网）**
+1. 找 @BotFather 建 bot 拿 token；找 @JsonDumpBot 查 chat id
+2. Secrets 添加 `TELEGRAM_BOT_TOKEN`、`TELEGRAM_CHAT_ID`
+3. `DEEPSEEK_API_KEY`（可选，有则 AI 给每个赏金打难度/技能标签；没有也完全可用）
 
 ## 花费
 
