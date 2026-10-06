@@ -15,11 +15,30 @@ def _strip_html(text: str) -> str:
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
 TELEGRAM_THREAD_ID = os.environ.get("TELEGRAM_THREAD_ID")
+FEISHU_WEBHOOK_URL = os.environ.get("FEISHU_WEBHOOK_URL")  # 飞书群机器人 webhook，可替代 Telegram
+
+
+def _send_feishu(text: str):
+    """飞书群机器人：群设置 → 群机器人 → 添加自定义机器人，复制 webhook 地址."""
+    # 去掉 HTML 标签，飞书 text 消息不支持 HTML
+    plain = re.sub(r"<[^>]+>", "", text)
+    payload = {"msg_type": "text", "content": {"text": plain[:13000]}}
+    try:
+        resp = requests.post(FEISHU_WEBHOOK_URL, json=payload, timeout=15)
+        if resp.ok:
+            print("[Notifier] Feishu sent.")
+        else:
+            print(f"[Notifier] Feishu error: {resp.text}")
+    except Exception as e:
+        print(f"[Notifier] Feishu failed: {e}")
 
 
 def _send(text: str):
+    if FEISHU_WEBHOOK_URL:
+        _send_feishu(text)
+        return
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_CHAT_ID:
-        print("[Notifier] TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID not set.")
+        print("[Notifier] No notifier configured (set FEISHU_WEBHOOK_URL or TELEGRAM_*).")
         print(text)
         return
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
